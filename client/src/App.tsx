@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes } from "react-router-dom";
-import { Navbar } from "./components"
+import { Navbar, Footer } from "./components"
 
 function App() {
   return (
@@ -9,6 +9,7 @@ function App() {
         <Routes>
 
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );
