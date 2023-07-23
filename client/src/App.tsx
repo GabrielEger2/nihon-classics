@@ -1,11 +1,17 @@
-import React from 'react'
+import { BrowserRouter, Routes } from "react-router-dom";
+import { Navbar } from "./components"
 
-const App = () => {
+function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
-}
+    <div style={{ overflowX: 'hidden' }}>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
+};
 
 export default App
