@@ -89,6 +89,113 @@ const getMe = asyncHandler(async (req, res) => {
     })
 });
 
+// Update username
+// PUT /api/users/update-username
+// Access Private
+const updateUserName = asyncHandler(async (req, res) => {
+    const { userName } = req.body;
+  
+    const user = await User.findById(req.user._id);
+  
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  
+    user.userName = userName;
+    await user.save();
+  
+    res.json({
+      message: 'Username updated successfully',
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        email: user.email,
+      },
+    });
+  });
+  
+  // Update email
+  // PUT /api/users/update-email
+  // Access Private
+  const updateUserEmail = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+  
+    const user = await User.findById(req.user._id);
+  
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  
+    user.email = email;
+    await user.save();
+  
+    res.json({
+      message: 'Email updated successfully',
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        email: user.email,
+      },
+    });
+  });
+  
+  // Update password
+  // PUT /api/users/update-password
+  // Access Private
+  const updateUserPassword = asyncHandler(async (req, res) => {
+    const { password } = req.body;
+  
+    const user = await User.findById(req.user._id);
+  
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+  
+    await user.save();
+  
+    res.json({
+      message: 'Password updated successfully',
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        email: user.email,
+      },
+    });
+  });
+  
+  // Update profile picture
+  // PUT /api/users/update-profile-picture
+  // Access Private
+  const updateUserProfilePicture = asyncHandler(async (req, res) => {
+    const { profilePicturePath } = req.body;
+  
+    const user = await User.findById(req.user._id);
+  
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  
+    user.profilePicturePath = profilePicturePath;
+    await user.save();
+  
+    res.json({
+      message: 'Profile picture updated successfully',
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        email: user.email,
+        profilePicturePath: user.profilePicturePath,
+      },
+    });
+  });
+
 //Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -96,4 +203,12 @@ const generateToken = (id) => {
     })
 }
 
-module.exports = { registerUser, loginUser, getMe}
+module.exports = {
+    registerUser,
+    loginUser,
+    getMe,
+    updateUserName,
+    updateUserEmail,
+    updateUserPassword,
+    updateUserProfilePicture,
+  };

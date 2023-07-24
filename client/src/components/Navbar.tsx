@@ -22,7 +22,7 @@ const Navbar = () => {
             <div className="navbar max-w-7xl px-4">
                 <div className="flex-1">
                     <div className="h-[70px] w-[600px] -translate-x-32 absolute bg-[#b01e1e] z-10 hidden xl:block"></div>
-                    <div className="btn btn-ghost normal-case text-xl z-20 xl:text-base-100">日本-Classics</div>
+                    <Link to="/" className="btn btn-ghost normal-case text-xl z-20 xl:text-base-100">日本-Classics</Link>
                 </div>
                 <div className="flex-none gap-2">
                     <div className="form-control">
@@ -37,7 +37,7 @@ const Navbar = () => {
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
                             <li><Link to="/">Messages</Link></li>
                             <li><Link to="/">Create Post</Link></li>
-                            <li><Link to="/">Settings</Link></li>
+                            <li><Link to="/settings">Settings</Link></li>
                             {user ? (
                                     <li><button onClick={onLogout}>Logout</button></li>
                                 ) : (
