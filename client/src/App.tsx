@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { Navbar, Footer } from "./components"
-import { Home } from "./pages";
+import { Home, Login } from "./pages";
 
 function App() {
   return (
@@ -10,8 +12,10 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
+        <ToastContainer />
       </BrowserRouter>
     </div>
   );

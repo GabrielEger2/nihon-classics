@@ -1,6 +1,20 @@
+import { Link, useNavigate } from 'react-router-dom'
+import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { logout, reset } from '../features/auth/authSlice'
+import { toast } from 'react-toastify'
 import profilePicture from "../assets/imgs/profilePicture.jpg"
 
 const Navbar = () => {
+    const { user } = useAppSelector((state : any) => state.auth);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const onLogout = () => {
+        dispatch(logout())
+        dispatch(reset())
+        navigate('/')
+        toast.success('Logout Successfully')
+      }
 
   return (
     <section className='fixed top-0 right-0 w-full bg-base-100 z-50 shadow-lg'>
@@ -21,10 +35,15 @@ const Navbar = () => {
                             </div>
                         </label>
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                            <li>Messages</li>
-                            <li>Create a Post</li>
-                            <li>Settings</li>
-                            <li>Login</li>
+                            <li><Link to="/">Messages</Link></li>
+                            <li><Link to="/">Create Post</Link></li>
+                            <li><Link to="/">Settings</Link></li>
+                            {user ? (
+                                    <li><button onClick={onLogout}>Logout</button></li>
+                                ) : (
+                                    <li><Link to="/login">Login</Link></li>
+                                )
+                            }    
                         </ul>
                     </div>
                 </div>
