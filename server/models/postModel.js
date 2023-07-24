@@ -6,13 +6,41 @@ const postSchema = mongoose.Schema({
         required: true,
         ref: 'User'
     },
-    product: {
+    carBrand: {
         type: String,
-        required: [true, 'Please add a text value'],
+        required: [true, 'Please add a car brand value'],
+    },
+    carModel: {
+        type: String,
+        required: [true, 'Please add a car model value'],
+    },
+    releaseYear: {
+        type: Number,
+        required: [true, 'Please add a release year value'],
+    },
+    carColor: {
+        type: String,
+        required: [true, 'Please add a car color value'],
+    },
+    carMileage: {
+        type: Number,
+        required: [true, 'Please add a car mileage value'],
+    },
+    licensePlate: {
+        type: String,
+        required: [true, 'Please add a license plate value'],
     },
     price: {
         type: Number,
-        required: [true, 'Please add the product price']
+        required: [true, 'Please add the car product price']
+    },
+    carPhoto: {
+        type: String,
+        required: [true, 'Please add a photo path value'],
+    },
+    carDetails: {
+        type: String,
+        required: [true, 'Please add a car details value'],
     }
 }, {
     timestamps: true

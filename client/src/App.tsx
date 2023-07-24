@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAppSelector } from "./app/hooks";
 import { Navbar, Footer } from "./components"
-import { Home, Login, Settings } from "./pages";
+import { Home, Login, Settings, CreatePost } from "./pages";
 
 
 function App() {
@@ -19,6 +19,10 @@ function App() {
           <Route 
             path="/settings" 
             element={user ? <Settings /> : <Navigate to="../login" />}
+          />
+          <Route 
+            path="/create-post" 
+            element={user ? <CreatePost /> : <Navigate to="../login" />}
           />
         </Routes>
         <Footer />
