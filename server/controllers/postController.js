@@ -13,34 +13,34 @@ const getPosts = asyncHandler(async (req, res) => {
 // POST /api/posts
 // Access Private
 const setPost = asyncHandler(async (req, res) => {
-  if (!req.body.product || !req.body.price) {
+  if (!req.body.postType || 
+      !req.body.carBrand || 
+      !req.body.carModel || 
+      !req.body.releaseYear || 
+      !req.body.carColor || 
+      !req.body.carMileage ||
+      !req.body.licensePlate || 
+      !req.body.price || 
+      !req.body.carPhoto
+    ) {
     res.status(400);
-    throw new Error('Please add both product and price for the post');
+    throw new Error('Please add all required fields');
   }
 
   const post = await Post.create({
-    product: req.body.product,
-    price: req.body.price
+    user: req.user.id,
+    postType: req.body.postType,
+    carBrand: req.body.carBrand,
+    carModel: req.body.carModel,
+    releaseYear: req.body.releaseYear,
+    carColor: req.body.carColor,
+    carMileage: req.body.carMileage,
+    licensePlate: req.body.licensePlate,
+    price: req.body.price,
+    carPhoto: req.body.carPhoto,
+    carDetails: req.body.carDetails
   });
   res.status(201).json(post);
-});
-
-// Update Post
-// PUT /api/posts/:id
-// Access Private
-const updatePost = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id);
-
-  if (!post) {
-    res.status(404);
-    throw new Error('Post not found');
-  }
-
-  const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
-    new: true
-  });
-
-  res.status(200).json(updatedPost);
 });
 
 // Delete Post
@@ -61,6 +61,5 @@ const deletePost = asyncHandler(async (req, res) => {
 module.exports = {
   getPosts,
   setPost,
-  updatePost,
   deletePost
 };

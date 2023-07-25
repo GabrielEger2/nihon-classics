@@ -62,6 +62,9 @@ const Login = () => {
       }
 
     const loginUser = async (values : any) => {
+
+        values.email = values.userName;
+
         // @ts-ignore
         dispatch(login(values))
       };
@@ -69,7 +72,7 @@ const Login = () => {
     const handleFormSubmit = async (values : any) => {
         if (isRegister === false) await loginUser(values);
         if (isRegister === true) await registerUser(values);
-      };
+    };
 
   return (
     <section className='max-w-7xl lg:mx-auto pt-36'>
@@ -79,7 +82,7 @@ const Login = () => {
         <div className={`flex justify-center text-center text-6xl w-full font-bold ${isRegister ? '' : 'hidden'}`}>
             Register/登録する:
         </div>
-        <div className="flex justify-center pt-20 pb-20 w-full">
+        <div className="flex justify-center pt-20 pb-32 w-full">
             <div className="card w-96 md:w-[600px] bg-base-100 shadow-xl">
                 <Formik
                     onSubmit={handleFormSubmit}
@@ -100,11 +103,11 @@ const Login = () => {
                         <h2 className={`card-title ${isRegister ? '' : 'hidden'}`}>Register Form/登録フォーム</h2>
                         <div className={`form-control w-full ${isRegister ? 'hidden' : ''}`}>
                             <label className="label">
-                                <span className="label-text pt-6 text-xl sm:text-2xl">E-mail:</span>
+                                <span className="label-text pt-6 text-xl sm:text-2xl">E-mail/User Name:</span>
                             </label>
                             <input
                                 type="text"
-                                placeholder="メールアドレス"
+                                placeholder="メールアドレス/ユーザー名"
                                 className="input input-bordered w-full"
                                 value={values.userName}
                                 onChange={handleChange}
@@ -183,9 +186,8 @@ const Login = () => {
                             <div className="text-red-500">{errors.password}</div>
                             )}
                         </div>
-                        <p className={`pt-4 ${isRegister ? 'hidden' : ''}`}>DEMO EMAIL: HayaoMiyazaki@hotmail.com</p>
+                        <p className={`pt-4 ${isRegister ? 'hidden' : ''}`}>DEMO USER: HayaoMiyazaki</p>
                         <p className={`pt-2 ${isRegister ? 'hidden' : ''}`}>DEMO PASSWORD: HayaoMiyazaki</p>
-                        <a className="pt-4 link">Forgot Password?</a>
                         <a className={`pt-4 link ${isRegister ? 'hidden' : ''}`} onClick={() => { setIsRegister(true); resetForm(); }}>
                             Don't Have an Account?
                         </a>
