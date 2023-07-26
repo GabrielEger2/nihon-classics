@@ -84,7 +84,7 @@ export const updatePost = createAsyncThunk(
     }
   )
 
-export const goalSlice = createSlice({
+export const postSlice = createSlice({
   name: 'goal',
   initialState,
   reducers: {
@@ -98,7 +98,7 @@ export const goalSlice = createSlice({
       .addCase(getPosts.fulfilled, (state : any, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.goals = action.payload
+        state.posts = action.payload
       })
       .addCase(getPosts.rejected, (state : any, action) => {
         state.isLoading = false
@@ -111,7 +111,7 @@ export const goalSlice = createSlice({
       .addCase(deletePost.fulfilled, (state : any, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.goals = state.goals.filter(
+        state.posts = state.posts.filter(
           (goal : any) => goal._id !== action.payload.id
         )
       })
@@ -126,7 +126,7 @@ export const goalSlice = createSlice({
       .addCase(updatePost.fulfilled, (state : any, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.goals = state.goals.filter(
+        state.posts = state.posts.filter(
           (goal : any) => goal._id !== action.payload.id
         )
       })
@@ -138,5 +138,5 @@ export const goalSlice = createSlice({
   },
 })
 
-export const { reset } = goalSlice.actions
-export default goalSlice.reducer
+export const { reset } = postSlice.actions
+export default postSlice.reducer

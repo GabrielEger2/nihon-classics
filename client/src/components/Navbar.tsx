@@ -21,7 +21,7 @@ const Navbar = () => {
         <div className='flex justify-center border-b border-base-300'>
             <div className="navbar max-w-7xl px-4">
                 <div className="flex-1">
-                    <div className="h-[70px] w-[600px] -translate-x-32 absolute bg-[#b01e1e] z-10 hidden xl:block"></div>
+                    <div className="h-[67px] w-[600px] -translate-x-32 absolute bg-[#b01e1e] z-10 hidden xl:block"></div>
                     <Link to="/" className="btn btn-ghost normal-case text-xl z-20 xl:text-base-100">日本-Classics</Link>
                 </div>
                 <div className="flex-none gap-2">

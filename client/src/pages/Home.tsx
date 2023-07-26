@@ -1,9 +1,49 @@
+import { useEffect, useState } from 'react'
 import ReactTyped from "react-typed"
+import CarCard from "../components/CarCard"
+import { motion, AnimatePresence } from 'framer-motion';
+import { getPosts, reset } from "../features/posts/postSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 import OldJapaneseTempleImage from '../assets/imgs/oldJapaneseTemple.png'
 import BannerDivision from '../assets/imgs/BannerDivision.png'
 
 const Home = () => {
+    const dispatch = useAppDispatch();
+    const [active, setActive] = useState('All');
+    const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
+
+    const { posts, isError, message } = useAppSelector(
+        (state : any) => state.posts
+    );
+
+    useEffect(() => {
+        if (isError) {
+          console.log(message);
+        }
+    
+        dispatch(getPosts());
+    
+        return () => {
+          dispatch(reset());
+        };
+    }, [isError, message, dispatch]);
+
+    useEffect(() => {
+        if (!posts) {
+            return; // Return early if posts are not available yet
+        }
+        
+        if (active === 'All') {
+            setFilteredPosts(posts);
+        } else {
+            const filteredPosts = posts.filter((post: any) => post.postType.includes(active));
+            setFilteredPosts(filteredPosts);
+        }
+        
+    }, [active, posts]);
+
+
   return (
     <section className='flex justify-center pt-20'>
         <div className=" max-w-7xl xl:-translate-y-[95px]">
@@ -18,7 +58,7 @@ const Home = () => {
                         <button className="btn btn-lg btn-primary text-base-100 text-4xl">Search</button>
                     </div>
                 </div>
-                <div className='-translate-x-32 bg-primary w-[1000px] min-h-screen hidden xl:block z-50'>
+                <div className='-translate-x-32 bg-primary w-[1002px] min-h-screen hidden xl:block z-50'>
                     <h1 className='right-0 px-10 py-32 text-9xl text-base-100 space-y-4 font-bold absolute'>
                         <p>日</p>
                         <p>本</p>
@@ -31,7 +71,92 @@ const Home = () => {
                 </div>
             </div>
             <div>
-                <img className="-translate-x-28 w-[600px] -translate-y-48 hidden xl:block" src={BannerDivision} alt="" />
+                <img className="-translate-x-28 w-[600px] -translate-y-48 hidden xl:block" src={BannerDivision} alt="Banner Division" />
+            </div>
+            <div className='flex flex-col justify-center lg:-translate-y-24'>
+                <h1 className='text-6xl font-bold leading-tight text-center justify-center px-4'>
+                    Search For The Best Options: 
+                </h1>
+                <div className='pb-10 pt-20 flex flex-col sm:flex-row justify-center space-y-6 sm:space-y-0 space-x-6 px-10'>
+                    <div className='w-full flex input-group'>
+                        <input type="text" placeholder="Search for Brand, model, year..." className="input input-bordered w-full" />
+                        <select className="select select-bordered">
+                            <option disabled>Order</option>
+                            <option>Newest</option>
+                            <option>Oldest</option>
+                        </select>
+                    </div>
+                    <div className='flex space-x-2 items-center justify-center'>
+                        <motion.div 
+                            className={`items-center justify-center cursor-pointer font-bold rounded-lg px-4 py-1.5 text-2xl ${
+                                active === 'All' ? 'bg-primary text-gray-50' : 'border text-gray-900 border-primary'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                            onClick={() => setActive('All')} 
+                        >
+                            All
+                        </motion.div>        
+                        <motion.div 
+                            className={`items-center justify-center cursor-pointer font-bold rounded-lg px-4 py-1.5 text-2xl ${
+                            active === 'Buy' ? 'bg-primary text-gray-50' : 'border text-gray-900 border-primary'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                            onClick={() => setActive('Buy')} 
+                        >
+                            Buy
+                        </motion.div>
+                        <motion.div 
+                            className={`items-center justify-center cursor-pointer font-bold rounded-lg px-4 py-1.5 text-2xl ${
+                            active === 'Sell' ? 'bg-primary text-gray-50' : 'border text-gray-900 border-primary'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                            onClick={() => setActive('Sell')} 
+                        >
+                            Sell
+                        </motion.div>  
+                    </div>    
+                </div>
+                <div className='flex justify-center overflow-y-hidden'>
+                    {posts.length > 0 ? (
+                        <motion.div layout className="grid grid-cols-3">
+                            {filteredPosts.map((post : any) => {
+                                return (
+                                    <motion.div key={post._id}
+                                        layout
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0 }}
+                                        transition={{ duration: 0.25 }}
+                                    >
+                                        <AnimatePresence>
+                                            <CarCard 
+                                                postUserID={post.carPhoto}
+                                                postType={post.postType}
+                                                carBrand={post.carBrand}
+                                                carModel={post.carModel}
+                                                releaseYear={post.releaseYear}
+                                                carColor={post.carColor}
+                                                carMileage={post.carMileage}
+                                                licensePlate={post.licensePlate}
+                                                price={post.price}
+                                                carPhoto={post.carPhoto}
+                                                carDetails={post.carDetails}
+                                                postID={post._id}
+                                            />
+                                        </AnimatePresence>
+                                    </motion.div>
+                                )
+                            })}
+                        </motion.div>
+                    ) : (
+                        <span className="loading loading-bars loading-lg text-primary"></span>
+                    )}
+                </div>   
             </div>
         </div>
     </section>

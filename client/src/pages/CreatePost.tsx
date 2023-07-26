@@ -44,9 +44,6 @@ const CreatePost = () => {
         damping: 30,
     };
 
-    const cloudName = "your_cloud_name";
-    const uploadPreset = "your_upload_preset";
-
     const handleFormSubmit = async (values: any) => {
         console.log(values);
         values.postType = PostOption;
