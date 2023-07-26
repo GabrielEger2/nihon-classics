@@ -29,10 +29,53 @@ const logout = () => {
   localStorage.removeItem('user')
 }
 
+// Update user user name
+const updateuserName = async (userData : any, token : any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'update-username', userData, config)
+
+  return response.data
+}
+
+// Update user user email
+const updateuserEmail = async (userData : any, token : any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'update-email', userData, config)
+
+  return response.data
+}
+
+// Update user user password
+const updateuserPassword = async (userData : any, token : any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'update-password', userData, config)
+
+  return response.data
+}
+
+
 const authService = {
   register,
   logout,
-  login
+  login,
+  updateuserName,
+  updateuserEmail,
+  updateuserPassword
 }
 
 export default authService

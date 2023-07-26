@@ -67,7 +67,8 @@ const loginUser = asyncHandler(async (req, res) => {
             _id: user.id,
             name: user.userName,
             email: user.email,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
+            profilePicturePath: user.profilePicturePath
         })
     } else {
         res.status(400)
@@ -80,12 +81,13 @@ const loginUser = asyncHandler(async (req, res) => {
 // GET /api/users/me
 // Acess Private
 const getMe = asyncHandler(async (req, res) => {
-    const {_id, userName, email} = await User.findById(req.user.id)
+    const {_id, userName, email, profilePicturePath} = await User.findById(req.user.id)
 
     res.status(200).json({
         id: _id,
         userName,
-        email
+        email,
+        profilePicturePath
     })
 });
 
@@ -96,6 +98,14 @@ const updateUserName = asyncHandler(async (req, res) => {
     const { userName } = req.body;
   
     const user = await User.findById(req.user._id);
+
+    //Check if the user already exists
+    const checkUserName = await User.findOne({ userName })
+
+    if(checkUserName) {
+        res.status(409);
+        throw new Error('UserName already registered')
+    }
   
     if (!user) {
       res.status(404);
@@ -122,6 +132,14 @@ const updateUserName = asyncHandler(async (req, res) => {
     const { email } = req.body;
   
     const user = await User.findById(req.user._id);
+
+    //Check if the user already exists
+    const checkUserEmail = await User.findOne({ email })
+
+    if(checkUserEmail) {
+        res.status(409);
+        throw new Error('Email already registered')
+    }
   
     if (!user) {
       res.status(404);

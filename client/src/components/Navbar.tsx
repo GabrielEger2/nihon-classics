@@ -31,11 +31,18 @@ const Navbar = () => {
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
-                            <img src={profilePicture} />
+                                {user ? (
+                                    user.profilePicturePath !== "" ? (
+                                        <img src={user.profilePicturePath} />
+                                    ) : (
+                                        <img src={profilePicture} />
+                                    )
+                                ) : (
+                                    <img src={profilePicture} />
+                                )}
                             </div>
                         </label>
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                            <li><Link to="/">Messages</Link></li>
                             <li><Link to="/create-post">Create Post</Link></li>
                             <li><Link to="/settings">Settings</Link></li>
                             {user ? (

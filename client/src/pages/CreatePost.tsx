@@ -45,7 +45,6 @@ const CreatePost = () => {
     };
 
     const handleFormSubmit = async (values: any) => {
-        console.log(values);
         values.postType = PostOption;
 
         // Dispatch the action to create a new post
