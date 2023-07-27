@@ -32,27 +32,40 @@ const initialPassword = {
     password: ''
 }
 
+
 const Settings = () => {
     const { user } = useAppSelector((state : any) => state.auth);
     const dispatch = useAppDispatch();
 
     const handleUserNameUpdate = async (values : any) => {
-        dispatch(updateuserName(values));
-        window.location.reload();
+        if (user.userName === 'HayaoMiyazaki') {
+            toast.error("You can't change information about the demo user")
+        } else {
+            dispatch(updateuserName(values));
+            window.location.reload();
+        }
     };
 
     const handleUserEmailUpdate = async (values : any) => {
-        dispatch(updateUserEmail(values));
-        window.location.reload();
+        if (user.userName === 'HayaoMiyazaki') {
+            toast.error("You can't change information about the demo user")
+        } else {
+            dispatch(updateUserEmail(values));
+            window.location.reload();
+        }
     };
 
     const handleUserPassword = async (values : any) => {
-        if (values.oldPassword === values.password) {
-            console.log(values)
-            dispatch(updateUserPassword(values));
-            window.location.reload();
+        if (user.userName === 'HayaoMiyazaki') {
+            toast.error("You can't change information about the demo user")
         } else {
-            toast.error('Invalid old password')
+            if (values.oldPassword === values.password) {
+                console.log(values)
+                dispatch(updateUserPassword(values));
+                window.location.reload();
+            } else {
+                toast.error('Invalid old password')
+            }
         }   
     };
 
@@ -70,13 +83,13 @@ const Settings = () => {
             <label className="avatar h-40 flex justify-center mb-10 lg:mb-0 lg:justify-normal">
                 <div className="rounded-full">
                     {user ? (
-                        user.profilePicturePath !== "" ? (
+                        user.profilePicturePath !== "" && user.profilePicturePath ? (
                             <img src={user.profilePicturePath} />
                         ) : (
                             <img src={profilePicture} />
                         )
-                    ) : (
-                        <img src={profilePicture} />
+                        ) : (
+                            <img src={profilePicture} />
                     )}
                 </div>
             </label>
@@ -92,8 +105,6 @@ const Settings = () => {
         >
         {({
             values,
-            errors,
-            touched,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -125,8 +136,6 @@ const Settings = () => {
         >
         {({
             values,
-            errors,
-            touched,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -158,8 +167,6 @@ const Settings = () => {
         >
         {({
             values,
-            errors,
-            touched,
             handleBlur,
             handleChange,
             handleSubmit,

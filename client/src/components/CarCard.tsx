@@ -1,6 +1,14 @@
 const CarCard = ( props : any ) => {
+
+    const url = "http://localhost:5173/post/"
+
+    const handlePageSwitch = () => {
+        // Scroll to the top of the page when the link is clicked
+        window.scrollTo(0, 0);
+    };
+
   return (
-    <a href="google.com" className="card w-96 bg-base-100 shadow-xl m-2">
+    <a onClick={handlePageSwitch} href={url + props.postID} className="card w-96 bg-base-100 shadow-xl m-2">
         <figure><img className="w-96 h-64 object-cover" src={props.carPhoto} alt={props.carBrand} /></figure>
         <div className="card-body">
             <h2 className="card-title">

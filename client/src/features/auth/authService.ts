@@ -29,7 +29,7 @@ const logout = () => {
   localStorage.removeItem('user')
 }
 
-// Update user user name
+// Update user name
 const updateuserName = async (userData : any, token : any) => {
   const config = {
     headers: {
@@ -64,6 +64,13 @@ const updateuserPassword = async (userData : any, token : any) => {
   }
 
   const response = await axios.put(API_URL + 'update-password', userData, config)
+
+  return response.data
+}
+
+// Get user by ID
+const getUserByID = async (userId : any) => {
+  const response = await axios.get(API_URL + userId)
 
   return response.data
 }

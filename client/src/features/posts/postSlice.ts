@@ -65,6 +65,23 @@ export const deletePost = createAsyncThunk(
   }
 )
 
+// get post by ID
+export const getPostByID = createAsyncThunk(
+  "posts/getPostById",
+  async (postId: any, thunkAPI) => {
+    try {
+      const response = await postService.getPostByID(postId);
+      return response;
+    } catch (error : any) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const postSlice = createSlice({
   name: 'goal',
   initialState,
@@ -93,7 +110,7 @@ export const postSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.posts = state.posts.filter(
-          (goal : any) => goal._id !== action.payload.id
+          (post : any) => post._id !== action.payload.id
         )
       })
       .addCase(deletePost.rejected, (state : any, action) => {
@@ -101,6 +118,22 @@ export const postSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
+      .addCase(getPostByID.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.message = "";
+      })
+      .addCase(getPostByID.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.message = "";
+        state.posts = action.payload; // Store the fetched post in the state
+      })
+      .addCase(getPostByID.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      });
   },
 })
 

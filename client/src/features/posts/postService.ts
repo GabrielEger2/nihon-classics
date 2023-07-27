@@ -35,9 +35,17 @@ const deletePost = async (postId : any, token : any) => {
   return response.data
 }
 
+//Get post by ID
+const getPostByID = async (postId : any) => {
+  const response = await axios.get(API_URL + postId)
+
+  return response.data
+}
+
 const goalService = {
     createPost,
     getPosts,
+    getPostByID,
     deletePost
 }
 

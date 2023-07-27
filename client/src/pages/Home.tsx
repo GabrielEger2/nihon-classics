@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import ReactTyped from "react-typed"
 import CarCard from "../components/CarCard"
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +12,7 @@ const Home = () => {
     const dispatch = useAppDispatch();
     const [active, setActive] = useState('All');
     const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
+    const searchOptionsRef = useRef<HTMLDivElement>(null);
 
     const { posts, isError, message } = useAppSelector(
         (state : any) => state.posts
@@ -55,7 +56,17 @@ const Home = () => {
                     </h1>
                     <p className="pt-6 pb-12 px-8 xl:px-0 text-xl text-center justify-center xl:text-left xl:justify-normal text-gray-500">日本-Classics is an open network for buying and selling the most beautiful machines made by the land of the rising sun!</p>
                     <div className="flex space-x-6 justify-center xl:justify-normal">
-                        <button className="btn btn-lg btn-primary text-base-100 text-4xl">Search</button>
+                        <button
+                            className="btn btn-lg btn-primary text-base-100 text-4xl"
+                            onClick={() =>
+                                searchOptionsRef.current?.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start',
+                                  })
+                            }
+                            >
+                            Search
+                        </button>
                     </div>
                 </div>
                 <div className='-translate-x-32 bg-primary w-[1002px] min-h-screen hidden xl:block z-50'>
@@ -71,6 +82,7 @@ const Home = () => {
                 </div>
             </div>
             <div>
+                <div ref={searchOptionsRef}></div>
                 <img className="-translate-x-28 w-[600px] -translate-y-48 hidden xl:block" src={BannerDivision} alt="Banner Division" />
             </div>
             <div className='flex flex-col justify-center lg:-translate-y-24'>
@@ -124,7 +136,7 @@ const Home = () => {
                 </div>
                 <div className='flex justify-center overflow-y-hidden'>
                     {posts.length > 0 ? (
-                        <motion.div layout className="grid grid-cols-3">
+                        <motion.div layout className="grid md:grid-cols-2 xl:grid-cols-3">
                             {filteredPosts.map((post : any) => {
                                 return (
                                     <motion.div key={post._id}

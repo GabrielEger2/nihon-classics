@@ -58,8 +58,23 @@ const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Post deleted successfully' });
 });
 
+// get post by ID
+// GET /api/posts/:id
+// Access Public
+const getPostByID = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id);
+
+  if (!post) {
+    res.status(404);
+    throw new Error('Post not found');
+  }
+
+  res.status(200).json(post);
+});
+
 module.exports = {
   getPosts,
   setPost,
+  getPostByID,
   deletePost
 };
