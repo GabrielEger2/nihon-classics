@@ -1,6 +1,6 @@
 const CarCard = ( props : any ) => {
 
-    const url = "http://localhost:5173/post/"
+    const url = "https://nihon-classics.netlify.app/post/"
 
     const handlePageSwitch = () => {
         // Scroll to the top of the page when the link is clicked
