@@ -14,7 +14,7 @@ const Navbar = () => {
     const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
     const [data, setData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState<any[]>([])
 
     const onLogout = () => {
         dispatch(logout())
@@ -71,7 +71,7 @@ const Navbar = () => {
       
         setSearchQuery(query);
         setSearchResults(limitedResults);
-      };
+    };
 
   return (
     <section className='fixed top-0 right-0 w-full bg-base-100 z-50 shadow-lg'>
