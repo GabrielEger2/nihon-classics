@@ -106,6 +106,24 @@ export const updateUserPassword = createAsyncThunk(
   }
 )
 
+// Update user profile picture path
+export const updateUserProfilePicture = createAsyncThunk(
+  'posts/update-profile-picture',
+  async (userData : { values : any}, thunkAPI : any) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await authService.updateUserProfilePicturePath(userData, token)
+    } catch (error : any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -160,6 +178,20 @@ export const authSlice = createSlice({
         state.user = action.payload
       })
       .addCase(updateuserName.rejected, (state : any, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+        state.user = null
+      })
+      .addCase(updateUserProfilePicture.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(updateUserProfilePicture.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.user = action.payload
+      })
+      .addCase(updateUserProfilePicture.rejected, (state : any, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

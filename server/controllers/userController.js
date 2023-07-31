@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if(user){
         res.status(201).json({
             _id: user.id,
-            name: user.userName,
+            userName: user.userName,
             email: user.email,
             token: generateToken(user._id)
         })
@@ -65,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if(user && (await bcrypt.compare(password, user.password))) {
         res.status(200).json({
             _id: user.id,
-            name: user.userName,
+            userName: user.userName,
             email: user.email,
             token: generateToken(user._id),
             profilePicturePath: user.profilePicturePath
@@ -77,18 +77,18 @@ const loginUser = asyncHandler(async (req, res) => {
 
 });
 
-// Get user data
-// GET /api/users/me
-// Acess Private
-const getMe = asyncHandler(async (req, res) => {
-    const {_id, userName, email, profilePicturePath} = await User.findById(req.user.id)
+// Get a user data
+// GET /api/users/:id
+// Acess Public
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
 
-    res.status(200).json({
-        id: _id,
-        userName,
-        email,
-        profilePicturePath
-    })
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  
+    res.status(200).json(user);
 });
 
 // Update username
@@ -163,17 +163,24 @@ const updateUserName = asyncHandler(async (req, res) => {
   // PUT /api/users/update-password
   // Access Private
   const updateUserPassword = asyncHandler(async (req, res) => {
-    const { password } = req.body;
+    const { newPassword } = req.body;
+    const { oldPassword } = req.body;
   
     const user = await User.findById(req.user._id);
-  
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordValid) {
+      res.status(401);
+      throw new Error('Passwords do not match');
+    }
+
     if (!user) {
       res.status(404);
       throw new Error('User not found');
     }
   
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
+    user.password = await bcrypt.hash(newPassword, salt);
   
     await user.save();
   
@@ -224,7 +231,7 @@ const generateToken = (id) => {
 module.exports = {
     registerUser,
     loginUser,
-    getMe,
+    getUserById,
     updateUserName,
     updateUserEmail,
     updateUserPassword,

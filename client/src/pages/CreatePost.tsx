@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Formik } from "formik";
+import { toast } from 'react-toastify'
+import { UploadWidget } from "../components";
 import { createNewPost } from "../features/posts/postSlice";
 import { useAppDispatch } from "../app/hooks";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import "../index.css";
 
 const createPostSchema = yup.object().shape({
     carBrand: yup.string().required("required"),
     carModel: yup.string().required("required"),
-    releaseYear: yup.string().required("required"),
+    releaseYear: yup.string().required("required").matches(/^\d{4}$/, "Release year must be a four-digit number"),
     carColor: yup.string().required("required"),
-    carMileage: yup.string().required("required"),
-    licensePlate: yup.string().required("required"),
-    price: yup.string().required("required"),
-    carPhoto: yup.string().required("required"),
+    carMileage: yup.string().required("required").matches(/^\d+$/, "Car mileage must be a number"),
+    licensePlate: yup.string().required("required").length(1, "License plate should be exactly one character"),
+    price: yup.string().required("required").matches(/^\d+$/, "Car price must be a number"),
+    carPhoto: yup.string(),
     carDetails: yup.string()
 })
 
@@ -34,8 +37,10 @@ const initialValuePost = {
 const CreatePost = () => {
     const [isOn, setIsOn] = useState(false);
     const PostOption = isOn ? "Buy" : "Sell";
+    const [carPhotoPath, setcarPhotoPath] = useState('');
 
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const toggleSwitch = () => setIsOn(!isOn);
     const spring = {
@@ -45,10 +50,26 @@ const CreatePost = () => {
     };
 
     const handleFormSubmit = async (values: any) => {
-        values.postType = PostOption;
+        if (carPhotoPath === '') {
+            toast.error('Please add the car Image')
+        } else {
+            values.postType = PostOption;
+            values.carPhoto = carPhotoPath;
+            const formattedCarMileage = Number(values.carMileage).toLocaleString("en-US") + " Km";
+            values.carMileage = formattedCarMileage;
+            const carPrice = Number(values.price).toLocaleString("en-US", { style: 'currency', currency: 'USD' })
+            values.price =carPrice
+    
+            // Dispatch the action to create a new post
+            dispatch(createNewPost(values));
+            navigate("/")
+            window.scrollTo(0, 0);
+            toast.success('New post added')
+        }
+    };
 
-        // Dispatch the action to create a new post
-        dispatch(createNewPost(values));
+    const handleCarPhotoChange = (secureUrl : any) => {
+        setcarPhotoPath(secureUrl)
     };
 
   return (
@@ -77,10 +98,10 @@ const CreatePost = () => {
             handleSubmit,
         }) => (
             <form className="pt-16 w-full" onSubmit={handleSubmit}>
-                <div className="flex w-full lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1 items-end">
+                <div className="flex w-full lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1">
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car Brand:</span>
+                            <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Car Brand:</span>
                         </label>
                         <input 
                             type="text" 
@@ -97,7 +118,7 @@ const CreatePost = () => {
                     </div>
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car Model:</span>
+                            <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Car Model:</span>
                         </label>
                         <input 
                             type="text" 
@@ -114,7 +135,7 @@ const CreatePost = () => {
                     </div>
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Release Year:</span>
+                            <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Release Year:</span>
                         </label>
                         <input 
                             type="text" 
@@ -130,10 +151,10 @@ const CreatePost = () => {
                         )}
                     </div>
                 </div>
-                <div className="flex w-full pt-6 lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1 items-end">
+                <div className="flex w-full pt-6 lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1">
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car Color:</span>
+                            <span className="label-text text-xl sm:text-2xl h-20 sm:h-10 items-end flex">Car Color:</span>
                         </label>
                         <input 
                             type="text" 
@@ -150,7 +171,7 @@ const CreatePost = () => {
                     </div>
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car Mileage:</span>
+                            <span className="label-text text-xl sm:text-2xl h-20 sm:h-10 items-end flex">Car Mileage:</span>
                         </label>
                         <input 
                             type="text" 
@@ -161,13 +182,15 @@ const CreatePost = () => {
                             onBlur={handleBlur}
                             name="carMileage"
                         />
-                        {touched.carMileage && errors.carMileage && (
+                        {(errors.carMileage && touched.carMileage)? (
                             <div className="text-red-500">{errors.carMileage}</div>
+                        ) : (
+                            <div className="text-gray-400">{Number(values.carMileage).toLocaleString("en-US") + " Km"}</div>
                         )}
                     </div>
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">License Plate's Last Digit:</span>
+                            <span className="label-text text-xl sm:text-2xl h-20 sm:h-10 items-end flex">License Plate's Last Digit:</span>
                         </label>
                         <input 
                             type="text" 
@@ -183,10 +206,10 @@ const CreatePost = () => {
                         )}
                     </div>
                 </div>
-                <div className="flex w-full pt-6 lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1 items-end">
+                <div className="flex w-full pt-6 lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1">
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car price:</span>
+                            <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Car price:</span>
                         </label>
                         <input 
                             type="text" 
@@ -197,23 +220,18 @@ const CreatePost = () => {
                             onBlur={handleBlur}
                             name="price"
                         />
-                        {touched.price && errors.price && (
+                        {(errors.price && touched.price)? (
                             <div className="text-red-500">{errors.price}</div>
+                        ) : (
+                            <div className="text-gray-400">{Number(values.price).toLocaleString("en-US", { style: 'currency', currency: 'USD' })}</div>
                         )}
                     </div>
                     <div className="form-control w-full">
                         <label className="label">
-                            <span className="label-text text-xl sm:text-2xl">Car Photo:</span>
+                            <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Car Photo:</span>
                         </label>
-                        <input 
-                            type="file" 
-                            className="file-input file-input-bordered file-input-primary w-full" 
-                            value={values.carPhoto}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            name="carPhoto"
-                        />
-                        {touched.carPhoto && errors.carPhoto && (
+                        <UploadWidget onChange={handleCarPhotoChange} />
+                        {touched.carPhoto && errors.carPhoto && carPhotoPath === '' && (
                             <div className="text-red-500">{errors.carPhoto}</div>
                         )}
                     </div>
@@ -230,9 +248,9 @@ const CreatePost = () => {
                         onBlur={handleBlur}
                         name="carDetails"
                        />
-                      {touched.carDetails && errors.carDetails && (
-                         <div className="text-red-500">{errors.carDetails}</div>
-                    )}
+                        {touched.carDetails && errors.carDetails && (
+                            <div className="text-red-500">{errors.carDetails}</div>
+                        )}
                 </div>
                 <div className="flex justify-center py-14">
                     <button type="submit" className="btn btn-lg text-2xl text-base-100 btn-primary">Create {PostOption} Post</button>

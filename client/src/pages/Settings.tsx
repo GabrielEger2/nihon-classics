@@ -1,10 +1,12 @@
 import { useAppSelector } from "../app/hooks";
-import { updateuserName, updateUserEmail, updateUserPassword } from "../features/auth/authSlice";
+import { updateuserName, updateUserEmail, updateUserPassword, updateUserProfilePicture } from "../features/auth/authSlice";
 import * as yup from "yup"
 import { Formik } from "formik";
 import { toast } from 'react-toastify'
 import profilePicture from "../assets/imgs/profilePicture.jpg"
 import { useAppDispatch } from "../app/hooks";
+import { UploadWidget } from "../components";
+import { useNavigate } from "react-router-dom";
 
 const updateUserNameSchema = yup.object().shape({
     userName: yup.string().required("required"),
@@ -24,18 +26,19 @@ const initialEmail = {
 
 const updateUserPasswordSchema = yup.object().shape({
     oldPassword: yup.string().required("required"),
-    password: yup.string().required("required"),
+    newPassword: yup.string().required("required"),
 })
 
 const initialPassword = {
     oldPassword: '',
-    password: ''
+    newPassword: ''
 }
 
 
 const Settings = () => {
     const { user } = useAppSelector((state : any) => state.auth);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const handleUserNameUpdate = async (values : any) => {
         if (user.userName === 'HayaoMiyazaki') {
@@ -59,16 +62,34 @@ const Settings = () => {
         if (user.userName === 'HayaoMiyazaki') {
             toast.error("You can't change information about the demo user")
         } else {
-            if (values.oldPassword === values.password) {
-                console.log(values)
-                dispatch(updateUserPassword(values));
-                window.location.reload();
-            } else {
-                toast.error('Invalid old password')
-            }
+            dispatch(updateUserPassword(values));
+            window.location.reload();
         }   
     };
 
+    const handleUserPhotoChange = (secureUrl : any) => {
+        if (user.userName === 'HayaoMiyazaki') {
+            toast.error("You can't change information about the demo user")
+        } else {
+            const JSONsecureUrl : any = { profilePicturePath: secureUrl }
+            dispatch(updateUserProfilePicture(JSONsecureUrl))
+            toast.success('Your Profile Picture will change the next time you login!')
+            navigate("/")
+            window.scrollTo(0, 0);
+        }
+      };
+
+      const handleRemoveUserPhoto = () => {
+        if (user.userName === 'HayaoMiyazaki') {
+            toast.error("You can't change information about the demo user")
+        } else {
+            const JSONsecureUrl : any = { profilePicturePath: '' }
+            dispatch(updateUserProfilePicture(JSONsecureUrl))
+            toast.success('Your Profile Picture will be removed soon!')
+            navigate("/")
+            window.scrollTo(0, 0);
+        }
+      };
 
   return (
     <section className='max-w-7xl lg:mx-auto pt-36 px-10 pb-20'>
@@ -79,7 +100,7 @@ const Settings = () => {
             <div className="w-44">
                 <p className="-translate-y-8 text-2xl font-bold">Profile Picture:</p>
                 <p className="-translate-y-8 text-lg">プロフィール画像</p>
-            </div>
+            </div>,
             <label className="avatar h-40 flex justify-center mb-10 lg:mb-0 lg:justify-normal">
                 <div className="rounded-full">
                     {user ? (
@@ -94,8 +115,8 @@ const Settings = () => {
                 </div>
             </label>
             <div className="flex flex-col space-y-4">
-            <input type="file" className="file-input file-input-bordered file-input-primary w-full max-w-xs" />
-                <button className="btn btn-primary">Remove Profile Picture</button>
+                <UploadWidget onChange={handleUserPhotoChange} />
+                <button onClick={handleRemoveUserPhoto} className="btn text-lg btn-primary">Remove Profile Picture</button>
             </div>
         </div>
         <Formik
@@ -125,7 +146,7 @@ const Settings = () => {
                         name="userName" 
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Update name</button>
+                <button type="submit" className="btn text-lg btn-primary">Update name</button>
             </form>
         )}
         </Formik>
@@ -156,7 +177,7 @@ const Settings = () => {
                         name="email"  
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Update EMAIL</button>
+                <button type="submit" className="btn text-lg btn-primary">Update EMAIL</button>
             </form>
         )}
         </Formik>
@@ -199,12 +220,12 @@ const Settings = () => {
                             type="text" 
                             placeholder="新しいパスワード" 
                             className="input input-bordered lg:w-[400px] w-[300px]" 
-                            value={values.password}
+                            value={values.newPassword}
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            name="password"  
+                            name="newPassword"  
                         />
-                        <button type="submit" className="btn btn-primary mt-10 lg:mt-0">Update Password</button>
+                        <button type="submit" className="btn text-lg btn-primary mt-10 lg:mt-0">Update Password</button>
                     </div>
                 </div>
             </form>

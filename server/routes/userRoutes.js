@@ -4,7 +4,7 @@ const { protect } = require('../middleware/authMiddleware.js')
 const {
     registerUser,
     loginUser,
-    getMe,
+    getUserById,
     updateUserName,
     updateUserEmail,
     updateUserPassword,
@@ -13,7 +13,7 @@ const {
 
 router.post('/', registerUser)
 router.post('/login', loginUser)
-router.get('/me', protect, getMe)
+router.get('/:id', getUserById)
 router.put('/update-username', protect, updateUserName)
 router.put('/update-email', protect, updateUserEmail)
 router.put('/update-password', protect, updateUserPassword)

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import ReactTyped from "react-typed"
-import CarCard from "../components/CarCard"
+import { CarCard } from '../components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getPosts, reset } from "../features/posts/postSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
@@ -13,6 +13,9 @@ const Home = () => {
     const [active, setActive] = useState('All');
     const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
     const searchOptionsRef = useRef<HTMLDivElement>(null);
+    const [searchText, setSearchText] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = 9;
 
     const { posts, isError, message } = useAppSelector(
         (state : any) => state.posts
@@ -31,19 +34,27 @@ const Home = () => {
     }, [isError, message, dispatch]);
 
     useEffect(() => {
-        if (!posts) {
-            return; // Return early if posts are not available yet
-        }
-        
-        if (active === 'All') {
-            setFilteredPosts(posts);
-        } else {
-            const filteredPosts = posts.filter((post: any) => post.postType.includes(active));
-            setFilteredPosts(filteredPosts);
-        }
-        
-    }, [active, posts]);
+    if (!Array.isArray(posts)) {
+        return; // Return early if posts is not an array
+    }
 
+    const filteredPosts = posts.filter((post: any) => {
+    const title = `${post.carBrand} ${post.carModel} ${post.releaseYear}`;
+    const isActiveMatch = active === "All" || post.postType.includes(active);
+    const isSearchMatch =
+      searchText.trim() === "" ||
+      title.toLowerCase().includes(searchText.toLowerCase());
+    return isActiveMatch && isSearchMatch;
+    });
+
+    setFilteredPosts(filteredPosts);
+    setCurrentPage(1);
+}, [active, posts, searchText]);
+
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+
+    const totalPages = Math.ceil(filteredPosts.length / perPage);
 
   return (
     <section className='flex justify-center pt-20'>
@@ -90,13 +101,14 @@ const Home = () => {
                     Search For The Best Options: 
                 </h1>
                 <div className='pb-10 pt-20 flex flex-col sm:flex-row justify-center space-y-6 sm:space-y-0 space-x-6 px-10'>
-                    <div className='w-full flex input-group'>
-                        <input type="text" placeholder="Search for Brand, model, year..." className="input input-bordered w-full" />
-                        <select className="select select-bordered">
-                            <option disabled>Order</option>
-                            <option>Newest</option>
-                            <option>Oldest</option>
-                        </select>
+                    <div className='w-full flex'>
+                        <input
+                            type="text"
+                            placeholder="Search for Brand, model, year..."
+                            className="input input-bordered w-full"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
                     </div>
                     <div className='flex space-x-2 items-center justify-center'>
                         <motion.div 
@@ -134,10 +146,25 @@ const Home = () => {
                         </motion.div>  
                     </div>    
                 </div>
+                <div className='flex justify-center space-x-2 pb-2'>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                        key={index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`text-primary text-lg ${
+                            currentPage === index + 1
+                            ? 'link'
+                            : ''
+                        }`}
+                        >
+                        {index + 1}
+                        </button>
+                    ))}
+                </div>  
                 <div className='flex justify-center overflow-y-hidden'>
                     {posts.length > 0 ? (
                         <motion.div layout className="grid md:grid-cols-2 xl:grid-cols-3">
-                            {filteredPosts.map((post : any) => {
+                            {filteredPosts.slice(startIndex, endIndex).map((post: any) => {
                                 return (
                                     <motion.div key={post._id}
                                         layout
@@ -145,7 +172,6 @@ const Home = () => {
                                         exit={{ opacity: 0, scale: 0 }}
                                         transition={{ duration: 0.25 }}
                                     >
-                                        <AnimatePresence>
                                             <CarCard 
                                                 postUserID={post.carPhoto}
                                                 postType={post.postType}
@@ -160,7 +186,6 @@ const Home = () => {
                                                 carDetails={post.carDetails}
                                                 postID={post._id}
                                             />
-                                        </AnimatePresence>
                                     </motion.div>
                                 )
                             })}
@@ -168,7 +193,7 @@ const Home = () => {
                     ) : (
                         <span className="loading loading-bars loading-lg text-primary"></span>
                     )}
-                </div>   
+                </div>
             </div>
         </div>
     </section>

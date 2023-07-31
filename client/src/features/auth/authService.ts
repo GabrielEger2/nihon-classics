@@ -7,6 +7,7 @@ const register = async (userData : any) => {
   const response = await axios.post(API_URL, userData)
 
   if (response.data) {
+    response.data.profilePicturePath = ""
     localStorage.setItem('user', JSON.stringify(response.data))
   }
 
@@ -42,7 +43,7 @@ const updateuserName = async (userData : any, token : any) => {
   return response.data
 }
 
-// Update user user email
+// Update user email
 const updateuserEmail = async (userData : any, token : any) => {
   const config = {
     headers: {
@@ -55,7 +56,7 @@ const updateuserEmail = async (userData : any, token : any) => {
   return response.data
 }
 
-// Update user user password
+// Update user password
 const updateuserPassword = async (userData : any, token : any) => {
   const config = {
     headers: {
@@ -68,9 +69,15 @@ const updateuserPassword = async (userData : any, token : any) => {
   return response.data
 }
 
-// Get user by ID
-const getUserByID = async (userId : any) => {
-  const response = await axios.get(API_URL + userId)
+// Update user profile Picture path
+const updateUserProfilePicturePath = async (userData : any, token : any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'update-profile-picture', userData, config)
 
   return response.data
 }
@@ -82,7 +89,8 @@ const authService = {
   login,
   updateuserName,
   updateuserEmail,
-  updateuserPassword
+  updateuserPassword,
+  updateUserProfilePicturePath
 }
 
 export default authService

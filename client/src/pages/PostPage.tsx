@@ -1,32 +1,31 @@
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { getPostByID, reset } from "../features/posts/postSlice";
-import { useNavigate } from "react-router-dom";
 import profilePicture from "../assets/imgs/profilePicture.jpg"
 
 const PostPage = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { user } = useAppSelector((state: any) => state.auth);
+    const dispatch = useAppDispatch();
+    const { user } = useAppSelector((state: any) => state.auth);
 
-  const { postId } = useParams<{ postId: string }>();
+    const { postId } = useParams<{ postId: string }>();
 
-  const { posts, isLoading, isError, message } = useAppSelector(
-    (state: any) => state.posts
-  );
+    const { posts, isLoading, isError, message } = useAppSelector(
+      (state: any) => state.posts
+    );
 
-  useEffect(() => {
-    if (isError) {
-      console.log(message);
-    }
+    useEffect(() => {
+      if (isError) {
+        console.log(message);
+      }
+      
+      dispatch(getPostByID(postId));
 
-    dispatch(getPostByID(postId));
-
-    return () => {
-      dispatch(reset());
-    };
-  }, []);
+      return () => {
+        dispatch(reset());
+      };
+    }, [dispatch]);
 
   return (
     <section className='flex justify-center pt-24 pb-24'>
