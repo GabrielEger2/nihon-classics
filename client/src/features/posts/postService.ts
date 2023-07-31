@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5000/api/posts/'
+const API_URL = 'https://ri-ben-classics.onrender.com/api/posts/'
 
 // Create new post
 const createPost = async (postData : any, token : any) => {
