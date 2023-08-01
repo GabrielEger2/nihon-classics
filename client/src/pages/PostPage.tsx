@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { getPostByID, reset } from "../features/posts/postSlice";
 import profilePicture from "../assets/imgs/profilePicture.jpg"
+import { toast } from "react-toastify"
 
 const PostPage = () => {
     const dispatch = useAppDispatch();
+    const [userEmail, setUserEmail] = useState('Contact');
     const { user } = useAppSelector((state: any) => state.auth);
 
     const { postId } = useParams<{ postId: string }>();
@@ -26,6 +28,24 @@ const PostPage = () => {
         dispatch(reset());
       };
     }, [dispatch]);
+
+    const getUserEmail = async() => {
+      axios.get(`https://ri-ben-classics.onrender.com/api/users/${posts.user}`)
+      .then(response => {
+        setUserEmail(response.data.email);
+        toast.success("The post creator's email has been saved to your clipboard")
+
+        const tempInput = document.createElement("input");
+        tempInput.value = response.data.email;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+    }
 
   return (
     <section className='flex justify-center pt-24 pb-24'>
@@ -63,7 +83,7 @@ const PostPage = () => {
                   </h2>
                 </div>
                 <div className="card-actions justify-center pt-10">
-                  <button className="btn btn-primary text-xl font-bold">Contact</button>
+                  <button onClick={getUserEmail} className="btn btn-primary text-xl font-bold">{userEmail}</button>
                 </div>
               </div>
               <div className="stats shadow border-t border-gray-300 rounded-t-none hidden sm:flex">

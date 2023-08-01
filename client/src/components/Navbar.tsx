@@ -47,7 +47,7 @@ const Navbar = () => {
 
     useEffect(() => {
         // Fetch data from the API and store it in the state
-        axios.get('http://localhost:5000/api/posts/')
+        axios.get('https://ri-ben-classics.onrender.com/api/posts/')
           .then(response => {
             setData(response.data);
           })
