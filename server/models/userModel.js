@@ -17,7 +17,12 @@ const userSchema = mongoose.Schema({
     profilePicturePath: {
         type: String,
         default: ""
+    },
+    profilePostPublished: {
+        type: Number,
+        default: 0
     }
+    
 }, {
     timestamps: true
 })

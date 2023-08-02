@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import cloudinary from 'cloudinary-core';
 
 // @ts-ignore
 const UploadWidget = ({ onChange }) => {
@@ -25,9 +26,9 @@ const UploadWidget = ({ onChange }) => {
   
     return (
       // @ts-ignore
-      <button className="btn text-lg btn-primary" onClick={() => widgetRef.current.open()}>
+      <div className="btn text-lg btn-primary" onClick={() => widgetRef.current.open()}>
         Upload
-      </button>
+      </div>
     );
   };
 

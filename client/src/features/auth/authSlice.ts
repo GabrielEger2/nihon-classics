@@ -197,6 +197,20 @@ export const authSlice = createSlice({
         state.message = action.payload
         state.user = null
       })
+      .addCase(updateUserPassword.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.user = action.payload
+      })
+      .addCase(updateUserPassword.rejected, (state : any, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+        state.user = null
+      })
+      .addCase(updateUserPassword.pending, (state) => {
+        state.isLoading = true
+      })
   },
 })
 

@@ -8,7 +8,11 @@ import { toast } from "react-toastify"
 
 const PostPage = () => {
     const dispatch = useAppDispatch();
-    const [userEmail, setUserEmail] = useState('Contact');
+    const [profilePhoto, setProfilePhoto] = useState('');
+    const [userEmail, setUserEmail] = useState('contact')
+    const [userPublishedPosts, setUserPublishedPosts] = useState('');
+    const [isLoadingUser, setIsLoadingUser] = useState(true);
+    const [isLiked, setIsLiked] = useState(false);
     const { user } = useAppSelector((state: any) => state.auth);
 
     const { postId } = useParams<{ postId: string }>();
@@ -46,6 +50,28 @@ const PostPage = () => {
         console.error("Error fetching data:", error);
       });
     }
+
+    // Inside your useEffect
+    useEffect(() => {
+      if (posts.user) {
+        setIsLoadingUser(true);
+        axios.get(`https://ri-ben-classics.onrender.com/api/users/${posts.user}`)
+          .then(response => {
+            setProfilePhoto(response.data.profilePicturePath);
+            setUserPublishedPosts(response.data.profilePostPublished)
+          })
+          .catch(error => {
+            console.error("Error fetching data:", error);
+          })
+          .finally(() => {
+            setIsLoadingUser(false);
+          });
+      }
+    }, [posts.user]);
+
+    const handleLikeClick = () => {
+      setIsLiked(prevIsLiked => !prevIsLiked);
+    };
 
   return (
     <section className='flex justify-center pt-24 pb-24'>
@@ -88,8 +114,9 @@ const PostPage = () => {
               </div>
               <div className="stats shadow border-t border-gray-300 rounded-t-none hidden sm:flex">
                 <div className="stat">
-                  <div className="stat-figure text-primary translate-y-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                  <div className="stat-figure text-primary translate-y-2">
+                    <svg onClick={handleLikeClick} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className={`inline-block w-8 h-8 stroke-current cursor-pointer ${isLiked? 'hidden' : '' }`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    <svg onClick={handleLikeClick} xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" className={`inline-block w-8 h-8 stroke-current cursor-pointer ${isLiked? '' : 'hidden' }`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                   </div>
                 <div className="stat-title">Total Likes</div>
                 <div className="stat-value text-primary">32</div>
@@ -98,19 +125,21 @@ const PostPage = () => {
                   <div className="stat-figure text-secondary">
                     <div className="avatar">
                       <div className="w-16 rounded-full">
-                        {user ? (
-                          user.profilePicturePath !== "" ? (
-                            <img src={user.profilePicturePath} />
+                        {isLoadingUser ? (
+                          <span className="translate-x-6 translate-y-6 loading loading-bars loading-md text-primary"></span>
                         ) : (
-                            <img src={profilePicture} />
-                        )
-                        ) : (
-                          <img src={profilePicture} />
+                          <img src={profilePhoto || profilePicture} alt="Profile" />
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="stat-value">4</div>
+                  <div className="stat-value">
+                    {isLoadingUser ? (
+                      <p className="font-normal text-lg text-primary">loading...</p>
+                    ) : (
+                      <p>{userPublishedPosts}</p>
+                    )}
+                  </div>
                   <div className="stat-title">Posts published in <br /> this website</div>
                 </div>
               </div>

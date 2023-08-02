@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Post = require('../models/postModel');
+const User = require('../models/userModel');
 
 // Get Posts
 // GET /api/posts
@@ -26,6 +27,13 @@ const setPost = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please add all required fields');
   }
+  
+  // Increment profilePostPublished for the user
+  try {
+    await User.findByIdAndUpdate(req.user.id, { $inc: { profilePostPublished: 1 } });
+  } catch (error) {
+    console.error('Error updating profilePostPublished:', error);
+  }
 
   const post = await Post.create({
     user: req.user.id,
@@ -38,8 +46,9 @@ const setPost = asyncHandler(async (req, res) => {
     licensePlate: req.body.licensePlate,
     price: req.body.price,
     carPhoto: req.body.carPhoto,
-    carDetails: req.body.carDetails
+    carDetails: req.body.carDetails,
   });
+  
   res.status(201).json(post);
 });
 

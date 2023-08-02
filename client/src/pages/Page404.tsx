@@ -12,7 +12,7 @@ const Page404 = () => {
                 <span className="text-primary">Oops!</span> Page not found
               </p>
               <p className="mb-8 text-center text-gray-500 md:text-lg">
-                Your Car is in another castle.
+                Your car is in another castle.
               </p>
               <Link
                 to="/"

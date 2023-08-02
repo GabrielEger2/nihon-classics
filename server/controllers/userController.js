@@ -34,22 +34,24 @@ const registerUser = asyncHandler(async (req, res) => {
 
     //Create User
     const user = await User.create({
-        userName,
-        email,
-        password: hashedPassword
-    }) 
+      userName,
+      email,
+      password: hashedPassword,
+      profilePostPublished: 0
+    })
     
-    if(user){
-        res.status(201).json({
-            _id: user.id,
-            userName: user.userName,
-            email: user.email,
-            token: generateToken(user._id)
-        })
-    } else {
-        res.status(400)
-        throw new Error('Invalid user data')
-    }
+    if (user) {
+      res.status(201).json({
+          _id: user.id,
+          userName: user.userName,
+          email: user.email,
+          token: generateToken(user._id),
+          profilePostPublished: 0
+      });
+      } else {
+          res.status(400);
+          throw new Error('Invalid user data');
+      }
 
 });
 
@@ -68,7 +70,8 @@ const loginUser = asyncHandler(async (req, res) => {
             userName: user.userName,
             email: user.email,
             token: generateToken(user._id),
-            profilePicturePath: user.profilePicturePath
+            profilePicturePath: user.profilePicturePath,
+            profilePostPublished: user.profilePostPublished
         })
     } else {
         res.status(400)

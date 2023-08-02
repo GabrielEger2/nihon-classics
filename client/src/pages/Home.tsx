@@ -15,7 +15,7 @@ const Home = () => {
     const searchOptionsRef = useRef<HTMLDivElement>(null);
     const [searchText, setSearchText] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const perPage = 9;
+    const perPage = 6;
 
     const { posts, isError, message } = useAppSelector(
         (state : any) => state.posts

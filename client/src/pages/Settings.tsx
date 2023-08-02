@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
-import { updateuserName, updateUserEmail, updateUserPassword, updateUserProfilePicture } from "../features/auth/authSlice";
+import { updateuserName, updateUserEmail, updateUserPassword, updateUserProfilePicture, reset } from "../features/auth/authSlice";
 import * as yup from "yup"
 import { Formik } from "formik";
 import { toast } from 'react-toastify'
@@ -36,9 +37,21 @@ const initialPassword = {
 
 
 const Settings = () => {
-    const { user } = useAppSelector((state : any) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    const { user, isLoading, isError, isSuccess, message } = useAppSelector(
+        (state : any) => state.auth
+    )
+
+    useEffect(() => {
+        if (isError) {
+          toast.error(message)
+        }
+    
+        dispatch(reset())
+      }, [user, isError, isSuccess, message, navigate, dispatch])
+
 
     const handleUserNameUpdate = async (values : any) => {
         if (user.userName === 'HayaoMiyazaki') {
@@ -215,7 +228,7 @@ const Settings = () => {
                         <p className="text-2xl font-bold">New Password:</p>
                         <p className="text-lg">新しいパスワード</p>
                     </div>
-                    <div className="lg:space-x-10">
+                    <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-10 lg:space-y-0">
                         <input 
                             type="text" 
                             placeholder="新しいパスワード" 

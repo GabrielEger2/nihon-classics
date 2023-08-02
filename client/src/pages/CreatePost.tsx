@@ -96,6 +96,7 @@ const CreatePost = () => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue
         }) => (
             <form className="pt-16 w-full" onSubmit={handleSubmit}>
                 <div className="flex w-full lg:space-x-10 md:space-x-6 sm:space-x-2 space-x-1">
@@ -230,7 +231,10 @@ const CreatePost = () => {
                         <label className="label">
                             <span className="label-text text-xl sm:text-2xl h-10 items-end flex">Car Photo:</span>
                         </label>
-                        <UploadWidget onChange={handleCarPhotoChange} />
+                        <UploadWidget onChange={(secureUrl : any ) => {
+                            setFieldValue('carPhoto', secureUrl);
+                            handleCarPhotoChange(secureUrl);
+                        }} />
                         {touched.carPhoto && errors.carPhoto && carPhotoPath === '' && (
                             <div className="text-red-500">{errors.carPhoto}</div>
                         )}
@@ -253,7 +257,10 @@ const CreatePost = () => {
                         )}
                 </div>
                 <div className="flex justify-center py-14">
-                    <button type="submit" className="btn btn-lg text-2xl text-base-100 btn-primary">Create {PostOption} Post</button>
+                    {/* @ts-ignore */}
+                    <button type="button" className="btn btn-lg text-2xl text-base-100 btn-primary" onClick={handleSubmit}>
+                        Create {PostOption} Post
+                    </button>
                 </div>
             </form>
         )}
