@@ -2,7 +2,7 @@
 # 日本-Classics
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-This is a code repository for a website designed for enthusiasts of old Japanese cars. Please access it through the following [link](https://papas-pizza.vercel.app/)
+This is a code repository for a website designed for enthusiasts of old Japanese cars. Please access it through the following [link](https://nihon-classics.netlify.app/)
 
 <h3>Requirements</h3>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To use this website locally, you need to install all the required libraries, both in the server and client folder, by using the following command:</p> 
